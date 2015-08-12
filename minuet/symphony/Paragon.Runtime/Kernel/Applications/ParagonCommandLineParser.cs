@@ -34,6 +34,11 @@ namespace Paragon.Runtime.Kernel.Applications
             _args = args.ToList();
         }
 
+        public string[] Args
+        {
+            get { return _args.ToArray(); }
+        }
+
         public bool HasFlag(string flag)
         {
             var rex = new Regex(@"^\s*((/)|(\-\-))" + flag.Replace("-", @"\-") + "[=:]*");

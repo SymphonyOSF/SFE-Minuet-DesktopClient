@@ -9,6 +9,7 @@ using System.Windows.Interop;
 using Paragon.Plugins;
 using Paragon.Runtime.Properties;
 using Xilium.CefGlue;
+using Paragon.Runtime.Kernel.Applications;
 
 namespace Paragon.Runtime
 {
@@ -42,7 +43,8 @@ namespace Paragon.Runtime
 
         public static event EventHandler<RenderProcessInitEventArgs> RenderProcessInitialize;
 
-        public static void Initialize(string cachePath = null,
+        public static void Initialize(ParagonCommandLineParser cmdLIne = null,
+                                      string cachePath = null,
                                       string paragonPath = null, 
                                       string spellCheckLanguage = null,
                                       bool disableSpellChecking = false,
@@ -112,7 +114,19 @@ namespace Paragon.Runtime
                         ProductVersion = string.Format( "Paragon/{0} Chrome/{1}", Assembly.GetExecutingAssembly().GetName().Version, CefRuntime.ChromeVersion)
                     };
 
-                    var args = new CefMainArgs(new[] {"--process-per-tab"});
+                    var combinedArgs = cmdLIne.Args.Concat(new[] { "--process-per-tab" }).ToArray();
+                    
+                    // remove any arg not starting with --
+                    List<String> argsList = new List<string>();
+                    foreach (string arg in combinedArgs) 
+                    {
+                        if (arg.StartsWith("--"))
+                            argsList.Add(arg);
+
+                    }
+                    string[] finalArgs = argsList.ToArray();
+                    var args = new CefMainArgs(finalArgs);
+                    //var args = new CefMainArgs(new[] { "--process-per-tab" });
 
                     _cefApp = new CefBrowserApplication(disableSpellChecking, spellCheckLanguage);
                     _cefApp.RenderProcessInitialize += OnRenderProcessInitialize;

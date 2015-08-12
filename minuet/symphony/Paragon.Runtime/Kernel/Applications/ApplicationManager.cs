@@ -214,6 +214,7 @@ namespace Paragon.Runtime.Kernel.Applications
             using (AutoStopwatch.TimeIt("CEF initialization"))
             {
                 ParagonRuntime.Initialize(
+                    cmdLine,
                     CacheFolder,
                     null,
                     BrowserLanguage,
